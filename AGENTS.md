@@ -68,3 +68,27 @@ Any situations where the rule can be relaxed or does not apply.
 - Edit the relevant `.md` file directly.
 - Keep changes focused; one idea per rule file.
 - Update `README.md` if a rule changes the high-level workflow.
+
+## Commit Messages
+
+This repository uses the [Conventional Commits](https://www.conventionalcommits.org/) format for all commit messages:
+
+```
+<type>[optional scope]: <description>
+```
+
+### Types
+
+- `feat`: a new rule or addition to the rule set.
+- `fix`: a correction to an existing rule.
+- `docs`: changes to `README.md`, `AGENTS.md`, or other non-rule documentation.
+- `refactor`: restructuring of rule content without changing its meaning.
+- `chore`: maintenance, tooling, or repository housekeeping.
+- `revert`: reverts a previous commit.
+
+### Rules
+
+- Write the description in the imperative mood (e.g., `add`, not `added`).
+- Lowercase the first letter of the description.
+- Do not end the description with a period.
+- Add a body when the change needs motivation or context.
