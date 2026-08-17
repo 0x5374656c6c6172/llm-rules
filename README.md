@@ -167,6 +167,8 @@ To validate rule format, wire `lib.lintRules` into your flake's `checks`:
 checks.${system}.rules-lint = llm-rules.lib.lintRules pkgs;
 ```
 
+The `rules` attribute set is the public API. Renaming or removing a rule is a breaking change for consumers and must be signaled accordingly.
+
 ## License
 
 This project is licensed under the [MIT License](./LICENSE).
