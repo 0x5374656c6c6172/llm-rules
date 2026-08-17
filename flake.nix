@@ -3,13 +3,14 @@
 
   outputs = { self }:
     let
-      root = ./.;
+      root = ./.rules;
       rev = self.shortRev or self.rev or "dirty";
 
       # The naming convention in AGENTS.md (lowercase kebab-case `.md`) is the
-      # discovery contract: every compliant rule file at the repo root joins the
-      # catalog; non-rule root files (AGENTS.md, README.md, LICENSE, flake.nix,
-      # .gitignore) are excluded because they are not lowercase kebab-case.
+      # discovery contract: every compliant rule file in the `rules/` directory
+      # joins the catalog; non-rule files (AGENTS.md, README.md, LICENSE,
+      # flake.nix, .gitignore) are excluded because they are not lowercase
+      # kebab-case.
       ruleRegex = "([a-z][a-z0-9-]*)\\.md";
       isRule = n: builtins.match ruleRegex n != null;
       ruleFiles = builtins.filter isRule (builtins.attrNames (builtins.readDir root));

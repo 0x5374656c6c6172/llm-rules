@@ -1,10 +1,10 @@
 # LLM-Agnostic Agent Rules
 
-A lightweight, LLM-agnostic rule system for guiding AI coding agents. All rules are stored as kebab-case Markdown files at the project root.
+A lightweight, LLM-agnostic rule system for guiding AI coding agents. All rules are stored as kebab-case Markdown files in the `rules/` directory.
 
 ## Why This Exists
 
-Different agents use different rule file names (`.clinerules`, `.cursorrules`, etc.). This repository provides a single, portable rule set that any agent can consume by reading the Markdown files in the root directory.
+Different agents use different rule file names (`.clinerules`, `.cursorrules`, etc.). This repository provides a single, portable rule set that any agent can consume by reading the Markdown files in the `rules/` directory.
 
 ## Structure
 
@@ -13,7 +13,10 @@ Different agents use different rule file names (`.clinerules`, `.cursorrules`, e
 ├── AGENTS.md          # Rule naming and format guide
 ├── README.md          # This file
 ├── LICENSE            # MIT License
-└── *.md               # Individual kebab-case rule files
+└── rules/             # Individual kebab-case rule files
+    ├── branch-naming.md
+    ├── conventional-commits.md
+    └── ...
 ```
 
 ## Adding or Updating Rules
@@ -39,8 +42,8 @@ Vendor the repository in a neutral location, then link only the rule files you w
 
    ```sh
    mkdir -p .clinerules
-   ln -s ../.llm-rules/conventional-commits.md .clinerules/conventional-commits.md
-   ln -s ../.llm-rules/open-remote-after-push.md .clinerules/open-remote-after-push.md
+   ln -s ../.llm-rules/rules/conventional-commits.md .clinerules/conventional-commits.md
+   ln -s ../.llm-rules/rules/open-remote-after-push.md .clinerules/open-remote-after-push.md
    git add .clinerules
    git commit -m "chore: enable llm-rules in .clinerules"
    ```
@@ -53,7 +56,7 @@ Vendor the repository in a neutral location, then link only the rule files you w
    git commit -m "chore: update llm-rules submodule"
    ```
 
-Symlinks need a POSIX shell, or Windows with Developer Mode/admin and `git config core.symlinks true`. Where symlinks are unavailable, copy the files instead (`cp .llm-rules/<rule>.md .clinerules/`) and re-copy after each submodule update.
+Symlinks need a POSIX shell, or Windows with Developer Mode/admin and `git config core.symlinks true`. Where symlinks are unavailable, copy the files instead (`cp .llm-rules/rules/<rule>.md .clinerules/`) and re-copy after each submodule update.
 
 ### Sparse-checkout
 
@@ -69,7 +72,7 @@ Place the submodule directly at `.clinerules/` and restrict its working tree to 
 2. Restrict the working tree to the rule files (non-cone mode takes an explicit, slash-anchored file list):
 
    ```sh
-   git -C .clinerules sparse-checkout set --no-cone /conventional-commits.md /open-remote-after-push.md
+   git -C .clinerules sparse-checkout set --no-cone /rules/conventional-commits.md /rules/open-remote-after-push.md
    ```
 
    This step configures the submodule's working tree only and records nothing in your repository — there is nothing to commit here.
@@ -82,7 +85,7 @@ Place the submodule directly at `.clinerules/` and restrict its working tree to 
    git commit -m "chore: update llm-rules submodule"
    ```
 
-The sparse-checkout config lives in the submodule's `$GIT_DIR/info/sparse-checkout` and is not versioned, so after a fresh `git clone --recurse-submodules` a teammate must re-run step 2. To make it reproducible, commit the file list (for example in a setup script) and document the re-apply command. To adopt a new upstream rule, run `git -C .clinerules sparse-checkout add /<rule>.md`.
+The sparse-checkout config lives in the submodule's `$GIT_DIR/info/sparse-checkout` and is not versioned, so after a fresh `git clone --recurse-submodules` a teammate must re-run step 2. To make it reproducible, commit the file list (for example in a setup script) and document the re-apply command. To adopt a new upstream rule, run `git -C .clinerules sparse-checkout add /rules/<rule>.md`.
 
 ### Nix flake
 
