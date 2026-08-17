@@ -1,0 +1,70 @@
+# Agent Rules
+
+This repository is a rule set for LLM agents. All rules live at the root of the project as kebab-case Markdown files. No subdirectories are used.
+
+## Scope of This Document
+
+When working in this repository, follow only the conventions and instructions written in `AGENTS.md`. Any other kebab-case `.md` rule files that may exist in this project root are intended for consumption by agents working in *other* projects, not for agents operating inside this repository. Do not treat them as actionable instructions for this codebase unless explicitly instructed otherwise.
+
+## Naming Convention
+
+Every rule file must follow these conventions:
+
+- **kebab-case** with a `.md` extension (e.g., `code-quality.md`, `error-handling.md`).
+- **Lowercase only**; no spaces, PascalCase, or snake_case.
+- **Concise and descriptive**; the name should indicate the rule’s scope.
+
+Good examples:
+
+- `always-follow.md`
+- `code-quality.md`
+- `documentation.md`
+- `error-handling.md`
+- `testing.md`
+
+Bad examples:
+
+- `CodeQuality.md` (PascalCase)
+- `code_quality.md` (snake_case)
+- `my rule.md` (contains space)
+
+## Rule Format
+
+Each rule file is a Markdown document in the project root and must follow this structure:
+
+### 1. Title
+
+A top-level heading (`#`) with a short, human-readable rule title.
+
+### 2. Scope
+
+A clear statement of when the rule applies (e.g., "All code changes", "Frontend TypeScript files").
+
+### 3. Statement
+
+The rule itself, written as one or more concise, imperative statements.
+
+### 4. Rationale
+
+A brief explanation of why the rule exists and what problem it prevents.
+
+### 5. Examples (optional)
+
+Short do/don’t examples that illustrate the rule in practice.
+
+### 6. Exceptions (optional)
+
+Any situations where the rule can be relaxed or does not apply.
+
+## How to Create a New Rule
+
+1. Create a new file in the project root.
+2. Name it in kebab-case with the `.md` extension.
+3. Follow the rule format above.
+4. Ensure the first heading matches the rule title.
+
+## Updating Rules
+
+- Edit the relevant `.md` file directly.
+- Keep changes focused; one idea per rule file.
+- Update `README.md` if a rule changes the high-level workflow.
