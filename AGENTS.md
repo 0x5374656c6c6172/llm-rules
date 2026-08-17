@@ -81,4 +81,5 @@ The rules below govern day-to-day work in this repository. Each rule lives in it
 |------|------|
 | Conventional Commits | [`conventional-commits.md`](./conventional-commits.md) |
 | No Automatic Commits | [`no-automatic-commits.md`](./no-automatic-commits.md) |
+| Open Remote After Push | [`open-remote-after-push.md`](./open-remote-after-push.md) |
 
