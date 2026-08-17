@@ -84,6 +84,68 @@ Place the submodule directly at `.clinerules/` and restrict its working tree to 
 
 The sparse-checkout config lives in the submodule's `$GIT_DIR/info/sparse-checkout` and is not versioned, so after a fresh `git clone --recurse-submodules` a teammate must re-run step 2. To make it reproducible, commit the file list (for example in a setup script) and document the re-apply command. To adopt a new upstream rule, run `git -C .clinerules sparse-checkout add /<rule>.md`.
 
+### Nix flake
+
+For projects that use Nix, consume the rules as a versioned flake input and pick rules by name. The upstream exposes a `rules` catalog (name → file) and a `lib.materializeRules` helper; commit the generated `.clinerules/*.generated.md` so a plain `git clone` works without Nix.
+
+1. Add the input to your `flake.nix`:
+
+   ```nix
+   inputs.llm-rules.url = "github:0x5374656c6c6172/llm-rules";
+   ```
+
+2. Declare your selection (`nix/llm-rules.nix`) — output basename → rule name:
+
+   ```nix
+   {
+     "10-conventional-commits"   = "conventional-commits";
+     "20-open-remote-after-push" = "open-remote-after-push";
+   }
+   ```
+
+3. Materialize the selection and expose a sync app:
+
+   ```nix
+   packages.${system}.clinerules =
+     llm-rules.lib.materializeRules pkgs { ordered = import ./nix/llm-rules.nix; };
+
+   apps.${system}.sync-rules =
+     let clinerules = self.packages.${system}.clinerules; in {
+       type = "app";
+       program = pkgs.writeShellApplication {
+         name = "sync-rules";
+         runtimeInputs = [ pkgs.git pkgs.findutils pkgs.coreutils ];
+         text = ''
+           set -euo pipefail
+           root="$(git rev-parse --show-toplevel)"
+           target="$root/.clinerules"
+           mkdir -p "$target"
+           find "$target" -maxdepth 1 -name '*.generated.md' -delete
+           cp ${clinerules}/*.generated.md "$target/"
+           echo "Cline rules synchronized."
+         '';
+       };
+     };
+   ```
+
+4. Generate and commit the rules:
+
+   ```sh
+   nix run .#sync-rules
+   git add .clinerules
+   git commit -m "chore: sync llm-rules"
+   ```
+
+5. Update later by bumping the input and re-syncing:
+
+   ```sh
+   nix flake update llm-rules
+   nix run .#sync-rules
+   git commit -am "chore: update llm-rules"
+   ```
+
+Rules land as `<prefix>.generated.md`; that suffix is the managed sentinel — `sync-rules` only touches `*.generated.md`, so your own `.clinerules/*.md` rules are never clobbered. Unknown rule names fail at evaluation time, so typos surface immediately.
+
 ## License
 
 This project is licensed under the [MIT License](./LICENSE).

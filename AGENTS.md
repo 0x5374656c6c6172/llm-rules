@@ -94,3 +94,11 @@ This repository uses the [Conventional Commits](https://www.conventionalcommits.
 - Lowercase the first letter of the description.
 - Do not end the description with a period.
 - Add a body when the change needs motivation or context.
+
+## Nix Interface
+
+This repository is also a Nix flake. It exposes its rules as a stable, name-based catalog so consuming projects depend on a versioned rule package rather than copying files by path.
+
+- `rules` — an attribute set mapping each rule name to its store path (e.g. `rules.conventional-commits`). It is auto-derived from the root: every lowercase kebab-case `.md` file at the repo root is a catalog entry; non-rule root files (`AGENTS.md`, `README.md`, `LICENSE`, `flake.nix`, `.gitignore`) are excluded by the same naming rule. Adding a compliant rule file joins the catalog automatically — the naming convention in *Naming Convention* is the discovery contract.
+- `lib.materializeRules` — `pkgs -> { ordered }` builds an ordered directory of selected rules as `<key>.generated.md`, using the consumer's nixpkgs (the flake itself is input-free). Unknown rule names fail at evaluation time.
+- The `rules` attribute set is the public API. Renaming or removing a rule is a breaking change for consumers and must be signaled accordingly.
