@@ -4,7 +4,7 @@ This repository is a rule set for LLM agents. All rules live at the root of the 
 
 ## Scope of This Document
 
-When working in this repository, follow only the conventions and instructions written in `AGENTS.md`. Any other kebab-case `.md` rule files that may exist in this project root are intended for consumption by agents working in *other* projects, not for agents operating inside this repository. Do not treat them as actionable instructions for this codebase unless explicitly instructed otherwise.
+When working in this repository, follow the governance sections in this file (*Naming Convention*, *Rule Format*, *Applied Rules*, and so on) **and** the individual rule files listed in *Applied Rules*. Other kebab-case `.md` rule files that are not listed there exist for consumption by agents working in *other* projects — do not treat them as instructions for this codebase unless explicitly added to *Applied Rules*.
 
 ## Naming Convention
 
@@ -69,31 +69,18 @@ Any situations where the rule can be relaxed or does not apply.
 
 - Edit the relevant `.md` file directly.
 - Keep changes focused; one idea per rule file.
+- To make a rule active in this repository, add a row to *Applied Rules*.
+- To deactivate a rule, remove its row from *Applied Rules*.
 - Update `README.md` if a rule changes the high-level workflow.
 
-## Commit Messages
+## Applied Rules
 
-This repository uses the [Conventional Commits](https://www.conventionalcommits.org/) format for all commit messages:
+The rules below govern day-to-day work in this repository. Each rule lives in its own `.md` file at the project root — the full text is the authoritative source.
 
-```
-<type>[optional scope]: <description>
-```
-
-### Types
-
-- `feat`: a new rule or addition to the rule set.
-- `fix`: a correction to an existing rule.
-- `docs`: changes to `README.md`, `AGENTS.md`, or other non-rule documentation.
-- `refactor`: restructuring of rule content without changing its meaning.
-- `chore`: maintenance, tooling, or repository housekeeping.
-- `revert`: reverts a previous commit.
-
-### Rules
-
-- Write the description in the imperative mood (e.g., `add`, not `added`).
-- Lowercase the first letter of the description.
-- Do not end the description with a period.
-- Add a body when the change needs motivation or context.
+| Rule | File |
+|------|------|
+| Conventional Commits | [`conventional-commits.md`](./conventional-commits.md) |
+| No Automatic Commits | [`no-automatic-commits.md`](./no-automatic-commits.md) |
 
 ## Nix Interface
 
