@@ -79,7 +79,12 @@ The rules below govern day-to-day work in this repository. Each rule lives in it
 
 | Rule | File |
 |------|------|
+| Branch Naming | [`branch-naming.md`](./branch-naming.md) |
 | Conventional Commits | [`conventional-commits.md`](./conventional-commits.md) |
+| Incremental Changes | [`incremental-changes.md`](./incremental-changes.md) |
+| Logical Commits | [`logical-commits.md`](./logical-commits.md) |
 | No Automatic Commits | [`no-automatic-commits.md`](./no-automatic-commits.md) |
+| No Force Push | [`no-force-push.md`](./no-force-push.md) |
 | Open Remote After Push | [`open-remote-after-push.md`](./open-remote-after-push.md) |
+| Stay Within Scope | [`stay-within-scope.md`](./stay-within-scope.md) |
 
