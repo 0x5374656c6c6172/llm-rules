@@ -38,7 +38,9 @@ A top-level heading (`#`) with a short, human-readable rule title.
 
 ### 2. Scope
 
-A clear statement of when the rule applies (e.g., "All code changes", "Frontend TypeScript files").
+A clear statement of when the rule applies, framed around the operation or artifact the rule governs (e.g., "All code changes", "Frontend TypeScript files", "every `git push` operation").
+
+Keep the scope author-neutral. Describe what the rule applies to, never who performs it — do not reference "an agent" or any specific actor. Rules are portable and must stand on their own regardless of who carries them out. Conditions under which the rule does not apply, such as an existing project convention, belong in Exceptions rather than the Scope.
 
 ### 3. Statement
 
