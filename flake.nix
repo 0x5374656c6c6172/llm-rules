@@ -3,7 +3,7 @@
 
   outputs = { self }:
     let
-      root = ./.rules;
+      root = ./rules;
       rev = self.shortRev or self.rev or "dirty";
 
       # The naming convention in AGENTS.md (lowercase kebab-case `.md`) is the
