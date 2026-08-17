@@ -19,6 +19,24 @@ Different agents use different rule file names (`.clinerules`, `.cursorrules`, e
     └── ...
 ```
 
+## Available Rules
+
+A reference of all rules available in the `rules/` directory. Each rule's base name (the `.md` filename without the extension) can be used when symlinking, sparse-checkout, or referencing a specific rule.
+
+| Rule | Base Name | Statement |
+|------|-----------|-----------|
+| [Branch Naming](./rules/branch-naming.md) | `branch-naming` | Name branches using `<type>/<short-description>` with typed prefixes. |
+| [Conventional Commits](./rules/conventional-commits.md) | `conventional-commits` | Write all commit messages using the Conventional Commits format. |
+| [Incremental Changes](./rules/incremental-changes.md) | `incremental-changes` | Break work into small, focused steps; verify each before moving on. |
+| [Keep README Current](./rules/keep-readme-current.md) | `keep-readme-current` | Update the README in the same commit when a change affects documented information. |
+| [Logical Commits](./rules/logical-commits.md) | `logical-commits` | Each commit should represent a single logical unit of work. |
+| [No Automatic Commits](./rules/no-automatic-commits.md) | `no-automatic-commits` | Do not create Git commits unless the user has explicitly requested one. |
+| [No Force Push](./rules/no-force-push.md) | `no-force-push` | Do not force-push to shared branches without explicit user approval. |
+| [No Hardcoded Secrets](./rules/no-hardcoded-secrets.md) | `no-hardcoded-secrets` | Never embed secrets or credentials directly in source code or committed files. |
+| [Open Remote After Push](./rules/open-remote-after-push.md) | `open-remote-after-push` | After every successful push, open the remote's web page in the browser. |
+| [Run Tests Before Commit](./rules/run-tests-before-commit.md) | `run-tests-before-commit` | Run the project's test suite before committing. |
+| [Stay Within Scope](./rules/stay-within-scope.md) | `stay-within-scope` | Execute exactly what was requested; do not expand scope without asking. |
+
 ## Adding or Updating Rules
 
 See [`AGENTS.md`](./AGENTS.md) for the full convention, rule format, and workflow.

@@ -65,6 +65,7 @@ Any situations where the rule can be relaxed or does not apply.
 2. Name it in kebab-case with the `.md` extension.
 3. Follow the rule format above.
 4. Ensure the first heading matches the rule title.
+5. Add a row to the *Available Rules* table in `README.md`.
 
 ## Updating Rules
 
