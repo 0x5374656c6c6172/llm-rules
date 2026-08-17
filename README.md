@@ -22,7 +22,7 @@ See [`AGENTS.md`](./AGENTS.md) for the full convention, rule format, and workflo
 
 ## Using the Rules in Another Project
 
-The rule files are plain Markdown and can be consumed by any agent that reads project-level rules. The methods below use a git submodule so updates flow in from this repository; both target Cline, which loads every `.md` file in a `.clinerules/` directory at the workspace root as a rule.
+The rule files are plain Markdown and can be consumed by any agent that reads project-level rules. The methods below use a git submodule so updates flow in from this repository. The examples target Cline (`.clinerules/`); adapt the target directory for your tool (e.g. `.cursor/rules/` for Cursor).
 
 ### Symlinks
 
@@ -105,9 +105,17 @@ For projects that use Nix, consume the rules as a versioned flake input and pick
 
 3. Materialize the selection and expose a sync app:
 
+   The provider is agent-agnostic: the consumer names the derivation (`name`)
+   and decides which workspace directory the rules land in (`.clinerules/` for
+   Cline, `.cursor/rules/` for Cursor, and so on). The example below is wired
+   for Cline.
+
    ```nix
    packages.${system}.clinerules =
-     llm-rules.lib.materializeRules pkgs { ordered = import ./nix/llm-rules.nix; };
+     llm-rules.lib.materializeRules pkgs {
+       ordered = import ./nix/llm-rules.nix;
+       name = "clinerules";
+     };
 
    apps.${system}.sync-rules =
      let clinerules = self.packages.${system}.clinerules; in {
@@ -144,7 +152,7 @@ For projects that use Nix, consume the rules as a versioned flake input and pick
    git commit -am "chore: update llm-rules"
    ```
 
-Rules land as `<prefix>.generated.md`; that suffix is the managed sentinel — `sync-rules` only touches `*.generated.md`, so your own `.clinerules/*.md` rules are never clobbered. Unknown rule names fail at evaluation time, so typos surface immediately.
+By default, rules land as `<prefix>.generated.md` (set `sentinel` to change the managed marker). That default suffix is the managed sentinel — `sync-rules` only touches `*.generated.md`, so your own `.clinerules/*.md` rules are never clobbered. Unknown rule names fail at evaluation time, so typos surface immediately.
 
 ## License
 
