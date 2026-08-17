@@ -82,6 +82,7 @@ The rules below govern day-to-day work in this repository. Each rule lives in it
 | Branch Naming | [`branch-naming.md`](./branch-naming.md) |
 | Conventional Commits | [`conventional-commits.md`](./conventional-commits.md) |
 | Incremental Changes | [`incremental-changes.md`](./incremental-changes.md) |
+| Keep README Current | [`keep-readme-current.md`](./keep-readme-current.md) |
 | Logical Commits | [`logical-commits.md`](./logical-commits.md) |
 | No Automatic Commits | [`no-automatic-commits.md`](./no-automatic-commits.md) |
 | No Force Push | [`no-force-push.md`](./no-force-push.md) |
