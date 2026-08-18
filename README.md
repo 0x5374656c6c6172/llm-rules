@@ -1,10 +1,10 @@
-# LLM-Agnostic Agent Rules
+# Agent Rules
 
-A lightweight, LLM-agnostic rule system for guiding AI coding agents. All rules are stored as kebab-case Markdown files in the `rules/` directory.
+A lightweight, agent-portable rule set for coding agents. All rules are stored as kebab-case Markdown files in the `rules/` directory.
 
 ## Why This Exists
 
-Different agents use different rule file names (`.clinerules`, `.cursorrules`, etc.). This repository provides a single, portable rule set that any agent can consume by reading the Markdown files in the `rules/` directory.
+Different agents use different rule file names (`.clinerules`, `.cursor/rules/`, etc.). This repository provides a single, portable rule set that any agent can consume by reading the Markdown files in the `rules/` directory.
 
 ## Structure
 
@@ -52,29 +52,29 @@ Vendor the repository in a neutral location, then link only the rule files you w
 1. Add the submodule:
 
    ```sh
-   git submodule add https://github.com/0x5374656c6c6172/llm-rules.git .llm-rules
-   git commit -m "chore: add llm-rules submodule"
+   git submodule add https://github.com/0x5374656c6c6172/agent-rules.git .agent-rules
+   git commit -m "chore: add agent-rules submodule"
    ```
 
 2. Link the rules you want into `.clinerules/`:
 
    ```sh
    mkdir -p .clinerules
-   ln -s ../.llm-rules/rules/conventional-commits.md .clinerules/conventional-commits.md
-   ln -s ../.llm-rules/rules/open-remote-after-push.md .clinerules/open-remote-after-push.md
+   ln -s ../.agent-rules/rules/conventional-commits.md .clinerules/conventional-commits.md
+   ln -s ../.agent-rules/rules/open-remote-after-push.md .clinerules/open-remote-after-push.md
    git add .clinerules
-   git commit -m "chore: enable llm-rules in .clinerules"
+   git commit -m "chore: enable agent-rules in .clinerules"
    ```
 
 3. Update later by advancing the submodule (links pick up new content; link any newly added rules you want to adopt):
 
    ```sh
-   git submodule update --remote .llm-rules
-   git add .llm-rules
-   git commit -m "chore: update llm-rules submodule"
+   git submodule update --remote .agent-rules
+   git add .agent-rules
+   git commit -m "chore: update agent-rules submodule"
    ```
 
-Symlinks need a POSIX shell, or Windows with Developer Mode/admin and `git config core.symlinks true`. Where symlinks are unavailable, copy the files instead (`cp .llm-rules/rules/<rule>.md .clinerules/`) and re-copy after each submodule update.
+Symlinks need a POSIX shell, or Windows with Developer Mode/admin and `git config core.symlinks true`. Where symlinks are unavailable, copy the files instead (`cp .agent-rules/rules/<rule>.md .clinerules/`) and re-copy after each submodule update.
 
 ### Sparse-checkout
 
@@ -83,8 +83,8 @@ Place the submodule directly at `.clinerules/` and restrict its working tree to 
 1. Add the submodule at `.clinerules/`:
 
    ```sh
-   git submodule add https://github.com/0x5374656c6c6172/llm-rules.git .clinerules
-   git commit -m "chore: add llm-rules submodule at .clinerules"
+   git submodule add https://github.com/0x5374656c6c6172/agent-rules.git .clinerules
+   git commit -m "chore: add agent-rules submodule at .clinerules"
    ```
 
 2. Restrict the working tree to the rule files (non-cone mode takes an explicit, slash-anchored file list):
@@ -100,7 +100,7 @@ Place the submodule directly at `.clinerules/` and restrict its working tree to 
    ```sh
    git submodule update --remote .clinerules
    git add .clinerules
-   git commit -m "chore: update llm-rules submodule"
+   git commit -m "chore: update agent-rules submodule"
    ```
 
 The sparse-checkout config lives in the submodule's `$GIT_DIR/info/sparse-checkout` and is not versioned, so after a fresh `git clone --recurse-submodules` a teammate must re-run step 2. To make it reproducible, commit the file list (for example in a setup script) and document the re-apply command. To adopt a new upstream rule, run `git -C .clinerules sparse-checkout add /rules/<rule>.md`.
@@ -112,10 +112,10 @@ For projects that use Nix, consume the rules as a versioned flake input and pick
 1. Add the input to your `flake.nix`:
 
    ```nix
-   inputs.llm-rules.url = "github:0x5374656c6c6172/llm-rules";
+   inputs.agent-rules.url = "github:0x5374656c6c6172/agent-rules";
    ```
 
-2. Declare your selection (`nix/llm-rules.nix`) — level path → ordered rule set:
+2. Declare your selection (`nix/agent-rules.nix`) — level path → ordered rule set:
 
    ```nix
    {
@@ -128,7 +128,7 @@ For projects that use Nix, consume the rules as a versioned flake input and pick
 
 3. Materialize the selection and expose a sync app:
 
-   The provider is agent-agnostic: the consumer names the derivation (`name`)
+   The upstream is agent-portable: the consumer names the derivation (`name`)
    and decides which workspace directory the rules land in (`.clinerules/` for
    Cline, `.cursor/rules/` for Cursor, and so on). The example below is wired
    for Cline.
@@ -142,8 +142,8 @@ For projects that use Nix, consume the rules as a versioned flake input and pick
    '';
 
    packages.${system}.clinerules =
-     llm-rules.lib.materializeRules pkgs {
-       levels = import ./nix/llm-rules.nix;
+     agent-rules.lib.materializeRules pkgs {
+       levels = import ./nix/agent-rules.nix;
        name = "clinerules";
      };
 
@@ -184,24 +184,24 @@ For projects that use Nix, consume the rules as a versioned flake input and pick
    ```sh
    nix run .#sync-rules
    git add .clinerules
-   git commit -m "chore: sync llm-rules"
+   git commit -m "chore: sync agent-rules"
    ```
 
 5. Update later by bumping the input and re-syncing:
 
    ```sh
-   nix flake update llm-rules
+   nix flake update agent-rules
    nix run .#sync-rules
-   git commit -am "chore: update llm-rules"
+   git commit -am "chore: update agent-rules"
    ```
 
-By default, rules land as `<prefix>.generated.md` (set `sentinel` to change the managed marker). That default suffix is the managed sentinel — `sync-rules` only touches `*.generated.md`, so your own `.clinerules/*.md` rules are never clobbered. Unknown rule names fail at evaluation time, so typos surface immediately. Each generated file is prefixed with a provenance header (`<!-- generated by llm-rules @<rev> — do not edit -->`) so the source revision is always visible.
+By default, rules land as `<prefix>.generated.md` (set `sentinel` to change the managed marker). That default suffix is the managed sentinel — `sync-rules` only touches `*.generated.md`, so your own `.clinerules/*.md` rules are never clobbered. Unknown rule names fail at evaluation time, so typos surface immediately. Each generated file is prefixed with a provenance header (`<!-- generated by agent-rules @<rev> — do not edit -->`) so the source revision is always visible.
 
 #### Nested rules
 
 For projects that need different rules at different directory levels (e.g., general rules at root, domain-specific rules in subdirectories), add more keys to the selection. Each level maps a relative path to an ordered rule set. The derivation output mirrors the level structure: root-level files sit at the top, subdirectories contain their level's rules. Empty levels are skipped.
 
-Declare your nested selection (`nix/llm-rules.nix`):
+Declare your nested selection (`nix/agent-rules.nix`):
 
 ```nix
 {
@@ -222,8 +222,8 @@ Materialize with `levels` and write a tree-walking sync app:
 
 ```nix
 packages.${system}.clinerules =
-  llm-rules.lib.materializeRules pkgs {
-    levels = import ./nix/llm-rules.nix;
+  agent-rules.lib.materializeRules pkgs {
+    levels = import ./nix/agent-rules.nix;
     name = "clinerules";
   };
 
@@ -275,7 +275,7 @@ Agents like Cline accumulate rules as they descend the directory tree — a file
 To validate rule format, wire `lib.lintRules` into your flake's `checks`:
 
 ```nix
-checks.${system}.rules-lint = llm-rules.lib.lintRules pkgs;
+checks.${system}.rules-lint = agent-rules.lib.lintRules pkgs;
 ```
 
 The `rules` attribute set is the public API. Renaming or removing a rule is a breaking change for consumers and must be signaled accordingly.

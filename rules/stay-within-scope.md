@@ -10,7 +10,7 @@ Execute exactly what was requested. Do not expand the scope of a task to include
 
 ## Rationale
 
-Agents tend to anticipate "what comes next" and bundle it into the current task. While this may seem helpful, it can change state the user did not intend to touch, introduce unexpected side effects, and erode user control over the workflow. Keeping actions strictly within the stated scope ensures predictability and preserves trust.
+The tendency is to anticipate "what comes next" and bundle it into the current task. While this may seem helpful, it can change state the user did not intend to touch, introduce unexpected side effects, and erode user control over the workflow. Keeping actions strictly within the stated scope ensures predictability and preserves trust.
 
 ## Examples
 

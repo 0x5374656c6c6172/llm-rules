@@ -12,7 +12,7 @@ Resolve the web URL from the push destination and convert SSH-style remote URLs 
 
 ## Rationale
 
-Opening the remote repository immediately after a push gives the agent — and the user reviewing its work — instant visual confirmation that the commit landed in the expected branch and repository. It reduces the risk of a push to the wrong remote or wrong branch going unnoticed, and surfaces CI checks, pull-request status, and recent commit history in one view without extra manual steps.
+Opening the remote repository immediately after a push gives instant visual confirmation that the commit landed in the expected branch and repository. It reduces the risk of a push to the wrong remote or wrong branch going unnoticed, and surfaces CI checks, pull-request status, and recent commit history in one view without extra manual steps.
 
 ## Examples
 

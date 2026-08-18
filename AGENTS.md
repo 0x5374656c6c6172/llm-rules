@@ -1,6 +1,6 @@
 # Agent Rules
 
-This repository is a rule set for LLM agents. Rules live in the `rules/` directory as kebab-case Markdown files. No other subdirectories are used.
+This repository is a rule set for coding agents. Rules live in the `rules/` directory as kebab-case Markdown files. No other subdirectories are used.
 
 ## Scope of This Document
 
