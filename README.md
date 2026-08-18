@@ -45,67 +45,7 @@ See [`AGENTS.md`](./AGENTS.md) for the full convention, rule format, and workflo
 
 The rule files are plain Markdown and can be consumed by any agent that reads project-level rules. The methods below use a git submodule so updates flow in from this repository. The examples target Cline (`.clinerules/`); adapt the target directory for your tool (e.g. `.cursor/rules/` for Cursor).
 
-### Symlinks
-
-Vendor the repository in a neutral location, then link only the rule files you want into `.clinerules/`. This keeps the repo's non-rule files (`AGENTS.md`, `README.md`) out of Cline's view, and leaves `.clinerules/` owned by your project so your own rules can live alongside the vendored ones.
-
-1. Add the submodule:
-
-   ```sh
-   git submodule add https://github.com/0x5374656c6c6172/agent-rules.git .agent-rules
-   git commit -m "chore: add agent-rules submodule"
-   ```
-
-2. Link the rules you want into `.clinerules/`:
-
-   ```sh
-   mkdir -p .clinerules
-   ln -s ../.agent-rules/rules/conventional-commits.md .clinerules/conventional-commits.md
-   ln -s ../.agent-rules/rules/open-remote-after-push.md .clinerules/open-remote-after-push.md
-   git add .clinerules
-   git commit -m "chore: enable agent-rules in .clinerules"
-   ```
-
-3. Update later by advancing the submodule (links pick up new content; link any newly added rules you want to adopt):
-
-   ```sh
-   git submodule update --remote .agent-rules
-   git add .agent-rules
-   git commit -m "chore: update agent-rules submodule"
-   ```
-
-Symlinks need a POSIX shell, or Windows with Developer Mode/admin and `git config core.symlinks true`. Where symlinks are unavailable, copy the files instead (`cp .agent-rules/rules/<rule>.md .clinerules/`) and re-copy after each submodule update.
-
-### Sparse-checkout
-
-Place the submodule directly at `.clinerules/` and restrict its working tree to only the rule files with a non-cone sparse-checkout. This avoids symlinks (useful on Windows without symlink support), but because a submodule path is owned by the submodule, you cannot keep your own project rules in `.clinerules/` alongside it — use this when you want the vendored rules alone.
-
-1. Add the submodule at `.clinerules/`:
-
-   ```sh
-   git submodule add https://github.com/0x5374656c6c6172/agent-rules.git .clinerules
-   git commit -m "chore: add agent-rules submodule at .clinerules"
-   ```
-
-2. Restrict the working tree to the rule files (non-cone mode takes an explicit, slash-anchored file list):
-
-   ```sh
-   git -C .clinerules sparse-checkout set --no-cone /rules/conventional-commits.md /rules/open-remote-after-push.md
-   ```
-
-   This step configures the submodule's working tree only and records nothing in your repository — there is nothing to commit here.
-
-3. Update later by advancing the submodule; the sparse set persists in this working tree:
-
-   ```sh
-   git submodule update --remote .clinerules
-   git add .clinerules
-   git commit -m "chore: update agent-rules submodule"
-   ```
-
-The sparse-checkout config lives in the submodule's `$GIT_DIR/info/sparse-checkout` and is not versioned, so after a fresh `git clone --recurse-submodules` a teammate must re-run step 2. To make it reproducible, commit the file list (for example in a setup script) and document the re-apply command. To adopt a new upstream rule, run `git -C .clinerules sparse-checkout add /rules/<rule>.md`.
-
-### Nix flake
+### Nix flake (Recommended)
 
 For projects that use Nix, consume the rules as a versioned flake input and pick rules by name. The upstream exposes a `rules` catalog (name → file), a `lib.materializeRules` helper (flat and nested modes), and a `lib.lintRules` validator; commit the generated `.clinerules/*.generated.md` so a plain `git clone` works without Nix.
 
@@ -279,6 +219,66 @@ checks.${system}.rules-lint = agent-rules.lib.lintRules pkgs;
 ```
 
 The `rules` attribute set is the public API. Renaming or removing a rule is a breaking change for consumers and must be signaled accordingly.
+
+### Symlinks
+
+Vendor the repository in a neutral location, then link only the rule files you want into `.clinerules/`. This keeps the repo's non-rule files (`AGENTS.md`, `README.md`) out of Cline's view, and leaves `.clinerules/` owned by your project so your own rules can live alongside the vendored ones.
+
+1. Add the submodule:
+
+   ```sh
+   git submodule add https://github.com/0x5374656c6c6172/agent-rules.git .agent-rules
+   git commit -m "chore: add agent-rules submodule"
+   ```
+
+2. Link the rules you want into `.clinerules/`:
+
+   ```sh
+   mkdir -p .clinerules
+   ln -s ../.agent-rules/rules/conventional-commits.md .clinerules/conventional-commits.md
+   ln -s ../.agent-rules/rules/open-remote-after-push.md .clinerules/open-remote-after-push.md
+   git add .clinerules
+   git commit -m "chore: enable agent-rules in .clinerules"
+   ```
+
+3. Update later by advancing the submodule (links pick up new content; link any newly added rules you want to adopt):
+
+   ```sh
+   git submodule update --remote .agent-rules
+   git add .agent-rules
+   git commit -m "chore: update agent-rules submodule"
+   ```
+
+Symlinks need a POSIX shell, or Windows with Developer Mode/admin and `git config core.symlinks true`. Where symlinks are unavailable, copy the files instead (`cp .agent-rules/rules/<rule>.md .clinerules/`) and re-copy after each submodule update.
+
+### Sparse-checkout
+
+Place the submodule directly at `.clinerules/` and restrict its working tree to only the rule files with a non-cone sparse-checkout. This avoids symlinks (useful on Windows without symlink support), but because a submodule path is owned by the submodule, you cannot keep your own project rules in `.clinerules/` alongside it — use this when you want the vendored rules alone.
+
+1. Add the submodule at `.clinerules/`:
+
+   ```sh
+   git submodule add https://github.com/0x5374656c6c6172/agent-rules.git .clinerules
+   git commit -m "chore: add agent-rules submodule at .clinerules"
+   ```
+
+2. Restrict the working tree to the rule files (non-cone mode takes an explicit, slash-anchored file list):
+
+   ```sh
+   git -C .clinerules sparse-checkout set --no-cone /rules/conventional-commits.md /rules/open-remote-after-push.md
+   ```
+
+   This step configures the submodule's working tree only and records nothing in your repository — there is nothing to commit here.
+
+3. Update later by advancing the submodule; the sparse set persists in this working tree:
+
+   ```sh
+   git submodule update --remote .clinerules
+   git add .clinerules
+   git commit -m "chore: update agent-rules submodule"
+   ```
+
+The sparse-checkout config lives in the submodule's `$GIT_DIR/info/sparse-checkout` and is not versioned, so after a fresh `git clone --recurse-submodules` a teammate must re-run step 2. To make it reproducible, commit the file list (for example in a setup script) and document the re-apply command. To adopt a new upstream rule, run `git -C .clinerules sparse-checkout add /rules/<rule>.md`.
 
 ## License
 
