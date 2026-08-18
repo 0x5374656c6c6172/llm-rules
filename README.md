@@ -1,6 +1,6 @@
 # Agent Rules
 
-An agent-portable rule set for coding agents. All rules are stored as kebab-case Markdown files in the `rules/` directory.
+A portable rule set for coding agents. All rules are stored as kebab-case Markdown files in the `rules/` directory.
 
 ## Why This Exists
 
